@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blocks</title>
+    <!--Google fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!--Roboto: Regular 400-->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    
+    <!--Google icons-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <!--stylesheet-->
+    <link href="/styles.css" rel="stylesheet">
+    <!--manifest-->
+    <link href="/manifest.json" rel="manifest">
+    <!--ios support-->
+    <meta name="apple-mobile-web-app-status-bar" content="#131313">
+    <!--favicon-->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+</head>
+<body>
+    <!--splash-->
+    <!-- <div id="splash" class="splash">
+        <img src="/assets/logo.svg">
+    </div> -->
+    <!--authentication-->
+    <div id="auth" class="auth">
+        <h1 id="authTitle" class="auth-title">Log In</h1>
+        <p id="authGreeting" class="auth-greeting">Hello there! Let’s maximize your efficiency with Blocks.</p>
+        <form id="authForm" class="auth-form">
+            <p id="logInError" class="error">
+                Incorrect email or password. Please try again.
+                <span class="material-symbols-outlined">
+                    error
+                </span>
+            </p>
+            <input type="email" id="email" placeholder="Email *">
+            <p id="emailError" class="error">
+                Please enter a valid email address (e.g., name@example.com).
+                <span class="material-symbols-outlined">
+                    error
+                </span>
+            </p>
+            <input type="password" id="password" name="password" placeholder="Password *">
+            <p id="passwordError" class="error">
+                Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.
+                <span class="material-symbols-outlined">
+                    error
+                </span>
+            </p>
+            <p id="forgotPassword" class="auth-form-forgot-password">Forgot password?</p>
+            <input type="confirmPassword" id="confirmPassword" name="confirmPassword" placeholder="Confirm password *">
+            <p id="confirmPassowrdError" class="error">
+                Passwords do not match.
+                <span class="material-symbols-outlined">
+                    error
+                </span>
+            </p>
+            <input id="submit" type="submit"  name="submit" value="LOG IN">
+        </form>
+        <p id="authSwitchToSignUp" class="auth-switch">Don't have an account? <span id="authSwitchToSignUpLink">Sign up</span></p>
+        <p id="authSwitchToLogIn" class="auth-switch">Already have an account? <span id="authSwitchToLogInLink">Log in</span></p>
+    </div>
+    <!--home-->
+    <div class="home">
+        <form id="blockForm" class="block-form">
+            <div class="block-form-header">
+                <p class="block-form-header-title">BLOCK</p>
+                <div class="block-form-header-actions">
+                    <p id="deleteBtn" class="button">DELETE</p>
+                    <p id="updateBtn" class="button">UPDATE</p>
+                    <p id="createBtn" class="button">CREATE</p>
+                    <p id="closeFormBtn" class="button" >X</p>
+                </div>
+            </div>
+            <div>
+                <input type="text" class="block-form-body-title" name="title" placeholder="Title">
+                <div class="block-form-body-time">
+                    <input type="time" name="startTime">
+                    <span class="material-symbols-outlined">
+                        arrow_right_alt
+                    </span>
+                    <input type="time" name="endTime">
+                </div>
+            </div>
+        </form>
+
+        <div id="overlay" class="overlay"></div>
+
+        <div id="openFormBtn" class="button cta">
+            <span class="material-symbols-outlined cta-icon">
+                add
+            </span>
+        </div>
+
+        <nav>
+            <span id="logout" class="material-symbols-outlined">
+                logout
+            </span>
+            <!-- <span class="material-symbols-outlined">
+                settings
+            </span> -->
+        </nav>
+
+        <div class="date">
+            <!-- <span class="material-symbols-outlined">
+                chevron_left
+            </span> -->
+            <p>Today, June 15</p>
+            <!-- <span class="material-symbols-outlined">
+                chevron_right
+            </span> -->
+        </div>
+
+        <!--blocks-->
+        <div id="blocks" class="blocks">
+        </div> 
+        
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script>
+        // Initialize Firebase
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyB8L5faI2LhFUUnY_qi8HiuPoOZgIuZ6VU",
+            authDomain: "blocks-2a254.firebaseapp.com",
+            projectId: "blocks-2a254",
+            storageBucket: "blocks-2a254.appspot.com",
+            messagingSenderId: "359740211671",
+            appId: "1:359740211671:web:3ff77342759169c22acb92",
+            measurementId: "G-STPKK3TGCW"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Initialize Firebase Authentication and get a reference to the service
+        const auth = firebase.auth();
+        // Initialize Cloud Firestore and get a reference to the service
+        const db = firebase.firestore();
+    </script>
+      <script src="/js/app.js"></script>
+      <script src="/js/ui.js"></script>
+      <script src="/js/db.js" defer></script>
+      <script src="/js/auth.js" defer></script>
+</body>
+</html>
