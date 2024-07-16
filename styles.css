@@ -7,7 +7,7 @@
     padding:0;
 }
 
-.home{
+body{
     background-color: #FFF8F1;
     height: 100vh;
 }
@@ -126,13 +126,15 @@ input:focus {
     width: 100%;
     position: fixed;
     bottom:0;
-    transform: translate(0, 110%);
+    left: 50%;
+    transform: translate(-50%, 110%);
     z-index: 3;
     background-color: #FFF8F1;
     box-shadow: #00000013 0px 0px 8px;
     transition: 0.5s;
     box-sizing: border-box; 
     padding:16px;
+    border-radius: 16px;
 }
 .block-form-header{
     display: flex;
@@ -179,7 +181,7 @@ input:focus {
 .block-form-body-time span{
     font-size: 16px;
 }
-.block-form-body-time input{
+.block-form-body-time input, .block-form-body-date{
     font-size: 16px;
     margin:16px 12px;
     border:none;
@@ -228,8 +230,17 @@ nav span{
     align-content: center;
     background-color: #FFF8F1;
     align-items: center;
+    box-sizing: border-box; 
 }
 
+.block-form, nav, .date, .blocks{
+    max-width: 800px;
+    margin: auto
+}
+
+.blocks{
+    overflow-x: hidden;
+}
 
 /* block */
 .block{
@@ -238,6 +249,10 @@ nav span{
     border-radius: 5px;
     padding:16px;
     transition: transform 1s ease-in-out;
+}
+
+.block.free {
+    background-color: rgb(112, 226, 156);
 }
 
 .block.left{
@@ -251,6 +266,27 @@ nav span{
 
 .block-title{
     margin-top:8px;
+}
+
+.blocks{
+    position: relative;
+    overflow-y: visible;
+}
+
+#a{
+    position: absolute;
+    left: -100%;
+    width: 100%;
+}
+/* #b{
+    position: absolute;
+    left:0;
+    width:100%;
+} */
+#b {
+    position: absolute;
+    right: -110%;
+    width: 100%;
 }
 
 

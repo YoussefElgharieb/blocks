@@ -1,21 +1,9 @@
-// offline data
-db.enablePersistence()
-    .catch(err => {
-        if(err.code == 'failed-precondition'){
-            console.log('presistence failed')
-        }
-        else if(err.code == 'unimplemented'){
-            console.log('presistence not available')
-        }
-    });
-
 let userRef
 let blocksRef;
 
 const listenToBlocksRef = () =>{
     userRef = db.collection("users").doc(localStorage.getItem('id'))
     blocksRef = userRef.collection("blocks")
-
     if(localStorage.getItem('id')){
         blocksRef.onSnapshot((snapshot) => {
             snapshot.docChanges().forEach(change => {
@@ -32,14 +20,18 @@ const listenToBlocksRef = () =>{
 
 if(localStorage.getItem('id')){
     listenToBlocksRef();
+    authPage.style.display ='none';
 }
 
+// CRUD operations
 createBtn.addEventListener('click', (evt) => {
     evt.preventDefault();
+    console.log(form.date.value)
     const block = {
         title: form.title.value,
         startTime: form.startTime.value,
-        endTime: form.endTime.value
+        endTime: form.endTime.value,
+        date: form.date.value,
     }
     blocksRef.add(block)
         .catch(err => console.error(err))
@@ -51,7 +43,8 @@ updateBtn.addEventListener('click', evt => {
     const block = {
         title: form.title.value,
         startTime: form.startTime.value,
-        endTime: form.endTime.value
+        endTime: form.endTime.value,
+        date: form.date.value,
     }
     blocksRef.add(block)
         .catch(err => console.error(err))
@@ -62,3 +55,27 @@ deleteBtn.addEventListener('click', evt => {
     blocksRef.doc(deleteBtn.getAttribute('data-id')).delete();
     closeForm();
 })
+
+const get = (date, isRight) =>{
+    blocksRef.where("date", "==", date)
+    .get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            // console.log(doc.id, " => ", doc.data());
+            createBlock(doc.data(), doc.id, isRight);
+        });
+        gsap.to(".block", {
+            x: `${isRight?"-":"+"}=110%`,
+            stagger:0.1,
+            duration:0.2,
+            opacity:1
+        })
+        
+
+    })
+    .catch((error) => {
+        console.log("Error getting documents: ", error);
+    });
+    
+}

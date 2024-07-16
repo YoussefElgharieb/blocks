@@ -4,7 +4,8 @@ authForm.addEventListener('submit', (evt)=>{
     const password = authForm.password.value;
     if(confirmPassword.style.display === "" || confirmPassword.style.display === "none"){
         // log in
-        auth.signInWithEmailAndPassword(email, password)
+        if(emailValid){
+            auth.signInWithEmailAndPassword(email, password)
             .then((userCredential) =>{
                 // Signed in
                 let user = userCredential.user;
@@ -19,34 +20,57 @@ authForm.addEventListener('submit', (evt)=>{
                 var errorCode = error.code;
                 var errorMessage = error.message;
                 // ..
-                console.log(error);
+                logInError.style.display = "block"
             });
+        }
+        else{
+            authForm.email.style.border = "solid red"
+        }
+        
     }
     else{
         // sign up        
-        auth.createUserWithEmailAndPassword(email, password)
-            .then((userCredential) => {
-                // Signed in 
-                let user = userCredential.user;
-                // ...
-                localStorage.setItem('id', user.uid)
+        if(emailValid && passwordValid && confirmPasswordValid){
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Signed in 
+                    let user = userCredential.user;
+                    // ...
+                    localStorage.setItem('id', user.uid)
 
-                listenToBlocksRef()
-                db.collection("users").doc(localStorage.getItem('id')).collection("blocks").add({
-                    title:"Your first time block",
-                    startTime:"07:00",
-                    endTime:"08:00"
+                    listenToBlocksRef()
+                    db.collection("users").doc(localStorage.getItem('id')).collection("blocks").add({
+                        title:"Your first time block",
+                        startTime:"07:00",
+                        endTime:"08:00",
+                        date:format(date),
+                    })
+
+                    authPage.style.display ='none';
+
+                    
                 })
-
-                authPage.style.display ='none';
-
-                
-            })
-            .catch((error) => {
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                // ..
-            });
+                .catch((error) => {
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    // ..
+                    if(errorCode == "auth/email-already-in-use"){
+                        signUpError.style.display = "block"
+                        authForm.email.style.border = "solid red"
+                    }
+                });
+        }
+        else{
+            if(!emailValid){
+                authForm.email.style.border = "solid red"
+            }
+            if (!passwordValid){
+                authForm.password.style.border = "solid red"
+            }
+            if (!confirmPasswordValid){
+                authForm.confirmPassword.style.border = "solid red"
+            } 
+        }
     }
 
 })
@@ -57,6 +81,8 @@ logout.addEventListener('click', (evt)=>{
         localStorage.removeItem("id");
         blocks.innerHTML = "";
         authPage.style.display= "block"
+        
+        authSwitchToLogInFunc();
     });
 })
 
