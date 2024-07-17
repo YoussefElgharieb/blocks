@@ -335,9 +335,11 @@ next.addEventListener('click', async () => {
     textTl.to('#current',{
         x:"-=110",
         opacity:0,
+        duration:0.1,
     })
     textTl.to('#current',{
         x:"+=220",
+        duration:0.1,
         onComplete: ()=>{
             current.innerHTML = currentInnerHTML;
         }
@@ -345,6 +347,7 @@ next.addEventListener('click', async () => {
     textTl.to('#current',{
         x:"-=110",
         opacity: 1,
+        duration:0.1
     })
 
 
@@ -353,13 +356,16 @@ next.addEventListener('click', async () => {
         x: "-=110%",
         ease: "power4.out",
         stagger:0.1,
+        duration:0.1,
     })
     blocksTl.to('.block', {
         stagger:0.1,
-        opacity:0
+        opacity:0,
+        duration:0.1
     })
     blocksTl.to(`.block`, {
         x: "+=220%",
+        duration:0.0001,
         onComplete: ()=>{
             blocks.innerHTML = ""
             get(format(date), true)
@@ -378,9 +384,11 @@ previous.addEventListener('click', async () => {
     textTl.to('#current',{
         x:"+=110",
         opacity:0,
+        duration:0.1,
     })
     textTl.to('#current',{
         x:"-=220",
+        duration:0.1,
         onComplete: ()=>{
             current.innerHTML = currentInnerHTML;
         }
@@ -388,6 +396,7 @@ previous.addEventListener('click', async () => {
     textTl.to('#current',{
         x:"+=110",
         opacity: 1,
+        duration:0.1,
     })
 
 
@@ -396,13 +405,16 @@ previous.addEventListener('click', async () => {
         x: "+=110%",
         ease: "power4.out",
         stagger:0.1,
+        duration:0.1
     })
     blocksTl.to('.block', {
         stagger:0.1,
-        opacity:0
+        opacity:0,
+        duration:0.1
     })
     blocksTl.to(`.block`, {
         x: "-=220%",
+        duration:0.0001,
         onComplete: ()=>{
             blocks.innerHTML = ""
             get(format(date), false)
