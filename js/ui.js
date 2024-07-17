@@ -32,9 +32,9 @@ let confirmPasswordValid = false;
 const logout = document.getElementById('logout')
 
 
-const previous = document.getElementById('previous');
-const current = document.getElementById('current');
-const next = document.getElementById('next');
+const previousBtn = document.getElementById('previousBtn');
+const currentLabel = document.getElementById('currentLabel');
+const nextBtn = document.getElementById('nextBtn');
 
 
 const days = ["Sun", "Mon", "Tue", "Wed", "Thurs", "Friday", "Sat"];
@@ -53,7 +53,14 @@ const today = new Date();
 const tomorrow = new Date();
 tomorrow.setDate(date.getDate() + 1);
 
-current.innerHTML = `Today, ${days[date.getDay()]} ${months[date.getMonth()]} ${date.getDate()}`
+currentLabel.innerHTML = `Today, ${days[date.getDay()]} ${months[date.getMonth()]} ${date.getDate()}`
+
+const a = document.getElementById("a")
+const b = document.getElementById("b")
+const c = document.getElementById("c")
+let previous = a;
+let current = b;
+let next = c
 
 const openForm =() => {
     overlay.style.display = "block"
@@ -75,32 +82,56 @@ const closeForm = () => {
     form.title.value = "";
 }
 
-const createBlock = (data, id, isRight) => {
+const createBlock = (data, id) => {
+    let container = null;
     if(data.date == format(date)){
+        container = current;
+    }
+    else {
+        let dayAfter = new Date(date.getTime())
+        dayAfter.setDate(dayAfter.getDate() + 1)
+        if(data.date == format(dayAfter)){
+            container = next;
+        }
+        else {
+            let dayBefore = new Date(date.getTime())
+            dayBefore.setDate(dayBefore.getDate() - 1)
+            if(data.date == format(dayBefore)){
+                container = previous;
+            }
+        }
+    }
+// style="${container == next || container == previous? ("opacity:0;  transform: translate(" + (container == next?"":"-") +"110%, 0px);"):""}"
+    if(container != null){
         const html = `
-            <div class="block" data-id="${id}" style="${isRight != null? "opacity:1;  transform: translate(" + (isRight?"":"-") +"110%, 0px);":""}">
+            <div class="block" data-id="${id}" >
                 <p class="block-time-frame">${data.startTime} - ${data.endTime}</p>
                 <p class="block-title">${data.title}</p>
             </div>
         `
 
         let flag = true;
-        for(let i = 0; i < blocks.children.length && flag; i++){
-            if(blocks.children[i].firstElementChild.innerHTML > data.startTime + " - " + data.endTime){
-                blocks.children[i].insertAdjacentHTML("beforebegin", html);
+        for(let i = 0; i < container.children.length && flag; i++){
+            if(container.children[i].firstElementChild.innerHTML > data.startTime + " - " + data.endTime){
+                container.children[i].insertAdjacentHTML("beforebegin", html);
                 flag = false;
             }
         }
         if(flag){
-            blocks.innerHTML += html;
+            container.innerHTML += html;
         }
     }
 }
 
 const deleteBlock = (id) => {
-    const block = document.querySelector(`.block[data-id=${id}]`)
+    let block = document.querySelector(`.block[data-id=${id}]`)
     block.remove();
-    
+
+    block = next.querySelector(`.block[data-id=${id}]`)
+    block.remove();
+
+    block = previous.querySelector(`.block[data-id=${id}]`)
+    block.remove();
 }
 
 const authSwitchToSignUpFunc = () =>{
@@ -322,102 +353,116 @@ authForm.confirmPassword.addEventListener('input', ()=>{
     }, 500)
 })
 
+let wait = false;
 
-
-next.addEventListener('click', async () => {
-    date.setDate(date.getDate() + 1)
-    let currentInnerHTML = ""
-    if(format(date) == today){
-        currentInnerHTML = "Today, ";
+nextBtn.addEventListener('click', async () => {
+    if(!wait){
+        wait = true;
+        date.setDate(date.getDate() + 1)
+        let currentLabelInnerHTML = ""
+        if(format(date) == today){
+            currentLabelInnerHTML = "Today, ";
+        }
+        currentLabelInnerHTML += `${days[date.getDay()]} ${months[date.getMonth()]} ${date.getDate()}`
+        var textTl = gsap.timeline(); 
+        textTl.to('#currentLabel',{
+            x:"-=110",
+            opacity:0,
+            duration:0.5,
+        })
+        textTl.set('#currentLabel',{
+            x:"+=220",
+            duration:0.1,
+            onComplete: ()=>{
+                currentLabel.innerHTML = currentLabelInnerHTML;
+            }
+        })
+        textTl.to('#currentLabel',{
+            x:"-=110",
+            opacity: 1,
+            duration: 0.5
+        })
+    
+    
+        var blocksTl = gsap.timeline()
+        let b_copy = b.innerHTML;
+        let c_copy = c.innerHTML;
+        blocksTl.to(`#b .block`, {
+            x: `-=${blocks.offsetWidth}`,
+            stagger: 0.1,
+            duration: 0.1,
+        })
+        blocksTl.to(`#c .block`, {
+            x: `-=${blocks.offsetWidth}`,
+            stagger: 0.1,
+            duration: 0.1,
+            onComplete: ()=>{
+                setTimeout(() => {
+                    console.log("hello")
+                    a.innerHTML = b_copy;
+                    b.innerHTML = c_copy;
+                    c.innerHTML = ""
+                    let copy = new Date(date.getTime())
+                    copy.setDate(copy.getDate() + 1)
+                    get(format(copy))
+                }, 1000)
+            }
+        })
     }
-    currentInnerHTML += `${days[date.getDay()]} ${months[date.getMonth()]} ${date.getDate()}`
-    var textTl = gsap.timeline(); 
-    textTl.to('#current',{
-        x:"-=110",
-        opacity:0,
-        duration:0.1,
-    })
-    textTl.to('#current',{
-        x:"+=220",
-        duration:0.1,
-        onComplete: ()=>{
-            current.innerHTML = currentInnerHTML;
-        }
-    })
-    textTl.to('#current',{
-        x:"-=110",
-        opacity: 1,
-        duration:0.1
-    })
-
-
-    var blocksTl = gsap.timeline()
-    blocksTl.to(`.block`, {
-        x: "-=110%",
-        ease: "power4.out",
-        stagger:0.1,
-        duration:0.1,
-    })
-    blocksTl.to('.block', {
-        stagger:0.1,
-        opacity:0,
-        duration:0.1
-    })
-    blocksTl.to(`.block`, {
-        x: "+=220%",
-        duration:0.0001,
-        onComplete: ()=>{
-            blocks.innerHTML = ""
-            get(format(date), true)
-        }
-    })
 })
 
-previous.addEventListener('click', async () => {
-    date.setDate(date.getDate() - 1)
-    let currentInnerHTML = ""
-    if(format(date) == today){
-        currentInnerHTML = "Today, ";
+previousBtn.addEventListener('click', async () => {
+    if(!wait){
+        wait = true;
+        date.setDate(date.getDate() - 1)
+        let currentLabelInnerHTML = ""
+        if(format(date) == today){
+            currentLabelInnerHTML = "Today, ";
+        }
+        currentLabelInnerHTML += `${days[date.getDay()]} ${months[date.getMonth()]} ${date.getDate()}`
+        var textTl = gsap.timeline(); 
+        textTl.to('#currentLabel',{
+            x:"+=110",
+            opacity:0,
+            duration:0.5,
+        })
+        textTl.set('#currentLabel',{
+            x:"-=220",
+            duration:0.1,
+            onComplete: ()=>{
+                currentLabel.innerHTML = currentLabelInnerHTML;
+            }
+        })
+        textTl.to('#currentLabel',{
+            x:"+=110",
+            opacity: 1,
+            duration: 0.5
+        })
+    
+    
+        var blocksTl = gsap.timeline()
+        let a_copy = a.innerHTML;
+        let b_copy = b.innerHTML;
+        blocksTl.to(`#b .block`, {
+            x: `+=${blocks.offsetWidth}`,
+            stagger: 0.1,
+            duration: 0.1,
+        })
+        blocksTl.to(`#a .block`, {
+            x: `+=${blocks.offsetWidth}`,
+            stagger: 0.1,
+            duration: 0.1,
+            onComplete: ()=>{
+                setTimeout(() => {
+                    console.log("hello")
+                    c.innerHTML = b_copy;
+                    b.innerHTML = a_copy;
+                    a.innerHTML = ""
+                    let copy = new Date(date.getTime())
+                    copy.setDate(copy.getDate() - 1)
+                    get(format(copy))
+                }, 1000)
+            }
+        })
     }
-    currentInnerHTML += `${days[date.getDay()]} ${months[date.getMonth()]} ${date.getDate()}`
-    var textTl = gsap.timeline(); 
-    textTl.to('#current',{
-        x:"+=110",
-        opacity:0,
-        duration:0.1,
-    })
-    textTl.to('#current',{
-        x:"-=220",
-        duration:0.1,
-        onComplete: ()=>{
-            current.innerHTML = currentInnerHTML;
-        }
-    })
-    textTl.to('#current',{
-        x:"+=110",
-        opacity: 1,
-        duration:0.1,
-    })
-
-
-    var blocksTl = gsap.timeline()
-    blocksTl.to(`.block`, {
-        x: "+=110%",
-        ease: "power4.out",
-        stagger:0.1,
-        duration:0.1
-    })
-    blocksTl.to('.block', {
-        stagger:0.1,
-        opacity:0,
-        duration:0.1
-    })
-    blocksTl.to(`.block`, {
-        x: "-=220%",
-        duration:0.0001,
-        onComplete: ()=>{
-            blocks.innerHTML = ""
-            get(format(date), false)
-        }
-    })
 })

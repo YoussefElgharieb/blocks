@@ -56,32 +56,14 @@ deleteBtn.addEventListener('click', evt => {
     closeForm();
 })
 
-const get = (date, isRight) =>{
+const get = (date) =>{
     blocksRef.where("date", "==", date)
     .get()
     .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
-            // console.log(doc.id, " => ", doc.data());
-            createBlock(doc.data(), doc.id, isRight);
+            createBlock(doc.data(), doc.id);
         });
-        var tl = gsap.timeline();
-        tl.to(".block", {
-            x: `${isRight?"-":"+"}=110%`,
-            stagger:0.1,
-            duration:0.1,
-            delay:-0.1,
-            opacity:0,            
-            ease: "power4.in",
-        })
-        tl.to(".block", {
-            stagger:0.1,
-            opacity:1,
-            delay:0.1
-        })
-        
-        
-
+        wait = false;
     })
     .catch((error) => {
         console.log("Error getting documents: ", error);

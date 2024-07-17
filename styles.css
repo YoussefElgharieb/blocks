@@ -134,7 +134,7 @@ input:focus {
     transition: 0.5s;
     box-sizing: border-box; 
     padding:16px;
-    border-radius: 16px;
+    border-radius: 16px 16px 0px 0px;
 }
 .block-form-header{
     display: flex;
@@ -216,6 +216,7 @@ nav {
     justify-content:right;
     align-content: center;
     background-color: #FFF8F1;
+    
 }
 nav span{
     margin-left:16px;
@@ -231,6 +232,7 @@ nav span{
     background-color: #FFF8F1;
     align-items: center;
     box-sizing: border-box; 
+    z-index: 1;
 }
 
 .block-form, nav, .date, .blocks{
@@ -270,24 +272,26 @@ nav span{
 
 .blocks{
     position: relative;
-    overflow-y: visible;
+    min-height:100vh;
 }
 
 #a{
     position: absolute;
-    left: -100%;
-    width: 100%;
-}
-/* #b{
-    position: absolute;
-    left:0;
+    left:-100%;
     width:100%;
-} */
-#b {
-    position: absolute;
-    right: -110%;
-    width: 100%;
+    background-color: red;
 }
 
+#b{
+    position: relative;
+    
+}
+
+#c{
+    position: absolute;
+    width:100%;
+    left:100%;
+    
+}
 
 
