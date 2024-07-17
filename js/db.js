@@ -26,7 +26,6 @@ if(localStorage.getItem('id')){
 // CRUD operations
 createBtn.addEventListener('click', (evt) => {
     evt.preventDefault();
-    console.log(form.date.value)
     const block = {
         title: form.title.value,
         startTime: form.startTime.value,
