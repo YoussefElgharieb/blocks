@@ -94,7 +94,7 @@ const closeForm = () => {
 }
 
 const createBlock = (data, id) => {
-    
+
     let index = differenceInDays(today, new Date(data.date));
     if(0 <= index && index < n){
         let container = blocks.children[index];
@@ -104,11 +104,12 @@ const createBlock = (data, id) => {
                 <p class="block-title">${data.title}</p>
             </div>
         `
-
         let flag = true;
         for(let i = 0; i < container.children.length && flag; i++){
-            if(container.children[i].firstElementChild.innerHTML > data.startTime + " - " + data.endTime){
-                container.children[i].insertAdjacentHTML("beforebegin", html);
+            let child = container.children[i];
+            let childStartTime = child.firstElementChild.innerHTML.substring(0,5);
+            if (data.startTime <= childStartTime){
+                child.insertAdjacentHTML("beforebegin", html);
                 flag = false;
             }
         }
@@ -416,7 +417,7 @@ const bounce = (direction) => {
         delay:2,
     })
     popTl.set(("#pop"),{
-        top:"-50px",
+        top:"-100px",
         opacity:1,
     })
     

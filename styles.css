@@ -277,7 +277,7 @@ nav span{
     background-color: rgb(253, 91, 91);
     padding: 8px 16px;
     position: fixed;
-    top:-50px;
+    top:-100px;
     border-radius: 8px;
     left:50%;
     transform: translate(-50%, 0px);
