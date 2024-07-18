@@ -63,10 +63,16 @@ const date = new Date();
 const today = new Date();
 const tomorrow = new Date();
 tomorrow.setDate(tomorrow.getDate() + 1);
+let n = 7;
+const maxDate = new Date();
+maxDate.setDate(maxDate.getDate() + n - 1);
+
+form.date.min = format(today)
+form.date.max = format(maxDate);
 
 currentLabel.innerHTML = `Today, ${days[today.getDay()]} ${months[today.getMonth()]} ${today.getDate()}`
 
-let n = 7;
+
 
 for(let i = 0; i < n; i++){
     let day = document.createElement('div');
