@@ -11,10 +11,9 @@ authForm.addEventListener('submit', (evt)=>{
                 let user = userCredential.user;
                 // ...
                 localStorage.setItem('id', user.uid)
-                
-                authPage.style.display ='none';
-
                 listenToBlocksRef()
+
+                authPage.style.display ='none';
             })
             .catch((error) => {
                 var errorCode = error.code;

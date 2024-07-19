@@ -43,6 +43,19 @@ const format = (date) => {
     return date.getFullYear() + "-" + (date.getMonth() + 1 + "").padStart(2,"0") + "-" + (date.getDate() + "").padStart(2,"0")
 }
 
+const differenceInHoursAndMinutes = (time, anotherTime) =>{
+    timeHours = Number(time.substring(0,2));
+    timeMinutes = Number(time.substring(3));
+    anotherTimeHours = Number(anotherTime.substring(0,2));
+    anotherTimeMinutes = Number(anotherTime.substring(3));
+
+    totalMinutes =  (60 * anotherTimeHours + anotherTimeMinutes) - (60 * timeHours + timeMinutes);
+    hours = Math.floor(totalMinutes / 60);
+    minutes = totalMinutes % 60;
+
+    return (hours > 0? hours + (hours > 1?" hours":" hour"):"")  + (minutes > 0? " " + minutes + (minutes > 1?" minutes":" minute"):"")
+}
+
 const differenceInDays = (date, anotherDate) => {
     copyDate = new Date(date.getTime());
     copyDate.setHours(0);
@@ -56,6 +69,50 @@ const differenceInDays = (date, anotherDate) => {
 
     return Math.round((copyAnotherDate.getTime() - copyDate.getTime()) / millisecondsInDay);
 }
+
+const addGaps = (day) => {
+    let current = "00:00";  
+    let i = 0;
+    while(i <= day.children.length){
+        if(i == day.children.length || day.children[i].dataset.startTime > current){
+            const html = `
+                <div class="block gap" data-id="gap">
+                    <div class="block-time-frame">
+                        <p class="block-start-time">00:00</p>
+                    </div>
+                    <div class="block-details">
+                        <p class="block-duration">${differenceInHoursAndMinutes(current, (i == day.children.length? "24:00":day.children[i].dataset.startTime))}</p>
+                    </div>
+                </div>
+            `
+            if(i == day.children.length){
+                day.insertAdjacentHTML("beforeend", html)
+            }
+            else{
+                day.children[i].insertAdjacentHTML("beforebegin", html);
+            }
+            i += 1;
+        }
+        if(i < day.children.length && current < day.children[i].dataset.endTime){
+            current = day.children[i].dataset.endTime;
+        }
+        i += 1;    
+    }
+}
+
+const removeGaps = (day) => {
+    let i = 0;
+    while(i < day.children.length){
+        console.log(day.children.length);
+        if(day.children[i].dataset.id == "gap"){
+            day.children[i].remove()
+        }
+        else{
+            i++;
+        }
+    }
+}
+
 
 let offset = 0;
 
@@ -76,6 +133,7 @@ currentLabel.innerHTML = `Today, ${days[today.getDay()]} ${months[today.getMonth
 
 for(let i = 0; i < n; i++){
     let day = document.createElement('div');
+    addGaps(day);
     blocks.append(day);
 }
 
@@ -105,22 +163,38 @@ const createBlock = (data, id) => {
     if(0 <= index && index < n){
         let container = blocks.children[index];
         const html = `
-            <div class="block" data-id="${id}">
-                <p class="block-time-frame">${data.startTime} - ${data.endTime}</p>
-                <p class="block-title">${data.title}</p>
+            <div class="block" data-id="${id}" data-title="${data.title}" data-start-time="${data.startTime}" data-end-time="${data.endTime}" data-date="${data.date}">
+                <div class="block-time-frame">
+                    <p class="block-start-time">${data.startTime}</p>
+                    <div class="line">
+                    
+                    </div>
+                    <p class="block-end-time">${data.endTime}</p>
+                </div>
+                <div class="block-details">
+                    <p class="block-title">${data.title}</p>
+                    <p class="block-duration">${differenceInHoursAndMinutes(data.startTime, data.endTime)}</p>
+                </div>
             </div>
         `
         let flag = true;
         for(let i = 0; i < container.children.length && flag; i++){
             let child = container.children[i];
-            let childStartTime = child.firstElementChild.innerHTML.substring(0,5);
-            if (data.startTime <= childStartTime){
-                child.insertAdjacentHTML("beforebegin", html);
-                flag = false;
+            if(child.dataset.id != "empty"){
+                let childStartTime = child.dataset.startTime;
+                if (data.startTime <= childStartTime){
+                    child.insertAdjacentHTML("beforebegin", html);
+                    removeGaps(container);
+                    addGaps(container);
+                    flag = false;
+                }
             }
+            
         }
         if(flag){
             container.innerHTML += html;
+            removeGaps(container);
+            addGaps(container);
         }
     }
 }
@@ -128,7 +202,10 @@ const createBlock = (data, id) => {
 const deleteBlock = (id) => {
     let block = document.querySelector(`.block[data-id=${id}]`)
     if(block != null){ 
+        removeGaps(block.parentElement);
+        addGaps(block.parentElement);
         block.remove();
+        
     }
 }
 
@@ -199,9 +276,11 @@ blocks.addEventListener('click', evt => {
     }
 
     if(block !== null){
-        form.title.value = block.children[1].innerHTML;
-        form.startTime.value = block.children[0].innerHTML.substring(0,5)
-        form.endTime.value = block.children[0].innerHTML.substring(8)
+        console.log(block.dataset);
+        form.title.value = block.dataset.title;
+        form.startTime.value = block.dataset.startTime;
+        form.endTime.value = block.dataset.endTime;
+        form.date.value = block.dataset.date;
         deleteBtn.style.display = "inline-block";
         deleteBtn.setAttribute('data-id', block.getAttribute('data-id'))
         openForm();
@@ -247,7 +326,7 @@ form.title.addEventListener('keydown', evt => {
                 updateBtn.style.display = ''
             }
         }
-    },0)
+    },1)
 })
 
 
@@ -261,11 +340,13 @@ form.startTime.addEventListener("change", evt => {
         }
     }
 
-    if(deleteBtn.style.display == 'none' || deleteBtn.style.display == ''){
-        createBtn.style.display = 'inline-block'
-    }
-    else{
-        updateBtn.style.display = 'inline-block'
+    if(form.title.value != ""){
+        if(deleteBtn.style.display == 'none' || deleteBtn.style.display == ''){
+            createBtn.style.display = 'inline-block'
+        }
+        else{
+            updateBtn.style.display = 'inline-block'
+        }
     }
 })
 
@@ -278,21 +359,25 @@ form.endTime.addEventListener("change", evt => {
             form.startTime.value = "00:00";
         }
     }
-    if(deleteBtn.style.display == 'none' || deleteBtn.style.display == ''){
-        createBtn.style.display = 'inline-block'
-    }
-    else{
-        updateBtn.style.display = 'inline-block'
+    if(form.title.value != ""){
+        if(deleteBtn.style.display == 'none' || deleteBtn.style.display == ''){
+            createBtn.style.display = 'inline-block'
+        }
+        else{
+            updateBtn.style.display = 'inline-block'
+        }
     }
 })
 
 
 form.date.addEventListener("change", evt => {
-    if(deleteBtn.style.display == 'none' || deleteBtn.style.display == ''){
-        createBtn.style.display = 'inline-block'
-    }
-    else{
-        updateBtn.style.display = 'inline-block'
+    if(form.title.value != ""){
+        if(deleteBtn.style.display == 'none' || deleteBtn.style.display == ''){
+            createBtn.style.display = 'inline-block'
+        }
+        else{
+            updateBtn.style.display = 'inline-block'
+        }
     }
 })
 
