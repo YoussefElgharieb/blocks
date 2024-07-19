@@ -71,17 +71,17 @@ const differenceInDays = (date, anotherDate) => {
 }
 
 const addGaps = (day) => {
-    let current = "00:00";  
+    let startTime = "00:00";  
     let i = 0;
     while(i <= day.children.length){
-        if(i == day.children.length || day.children[i].dataset.startTime > current){
+        if(i == day.children.length || day.children[i].dataset.startTime > startTime){
             const html = `
-                <div class="block gap" data-id="gap">
+                <div class="block gap" data-id="gap" data-date="${day.dataset.date}" data-start-time="${startTime}" data-end-time="${(i == day.children.length? "23:59":day.children[i].dataset.startTime)}">
                     <div class="block-time-frame">
                         <p class="block-start-time">00:00</p>
                     </div>
                     <div class="block-details">
-                        <p class="block-duration">${differenceInHoursAndMinutes(current, (i == day.children.length? "24:00":day.children[i].dataset.startTime))}</p>
+                        <p class="block-duration">${differenceInHoursAndMinutes(startTime, (i == day.children.length? "24:00":day.children[i].dataset.startTime))}</p>
                     </div>
                 </div>
             `
@@ -93,8 +93,8 @@ const addGaps = (day) => {
             }
             i += 1;
         }
-        if(i < day.children.length && current < day.children[i].dataset.endTime){
-            current = day.children[i].dataset.endTime;
+        if(i < day.children.length && startTime < day.children[i].dataset.endTime){
+            startTime = day.children[i].dataset.endTime;
         }
         i += 1;    
     }
@@ -103,7 +103,6 @@ const addGaps = (day) => {
 const resetGaps = (day) => {
     let i = 0;
     while(i < day.children.length){
-        console.log(day.children.length);
         if(day.children[i].dataset.id == "gap"){
             day.children[i].remove()
         }
@@ -134,6 +133,9 @@ currentLabel.innerHTML = `Today, ${days[today.getDay()]} ${months[today.getMonth
 
 for(let i = 0; i < n; i++){
     let day = document.createElement('div');
+    let date = new Date();
+    date.setDate(date.getDate() + i)
+    day.dataset.date = format(date);
     addGaps(day);
     blocks.append(day);
 }
@@ -273,13 +275,21 @@ blocks.addEventListener('click', evt => {
     }
 
     if(block !== null){
-        console.log(block.dataset);
-        form.title.value = block.dataset.title;
-        form.startTime.value = block.dataset.startTime;
-        form.endTime.value = block.dataset.endTime;
-        form.date.value = block.dataset.date;
-        deleteBtn.style.display = "inline-block";
-        deleteBtn.setAttribute('data-id', block.getAttribute('data-id'))
+        if(block.dataset.id != "gap"){
+            form.title.value = block.dataset.title;
+            form.startTime.value = block.dataset.startTime;
+            form.endTime.value = block.dataset.endTime;
+            form.date.value = block.dataset.date;
+            deleteBtn.style.display = "inline-block";
+            deleteBtn.setAttribute('data-id', block.getAttribute('data-id'))
+        }
+        else{
+            form.title.value = "";
+            form.startTime.value = block.dataset.startTime;
+            form.endTime.value = block.dataset.endTime;
+            form.date.value = block.dataset.date;
+            deleteBtn.style.display = "none";
+        }
         openForm();
     }
 })
