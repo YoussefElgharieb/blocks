@@ -417,39 +417,32 @@ authForm.email.addEventListener('input', ()=>{
     }, 500)
 });
 
-let passwordTimer;
-authForm.password.addEventListener('input', ()=>{
-    clearTimeout(passwordTimer);
+const validatePassowrd = () =>{
+    if(!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_-])[A-Za-z\d@$!%*?&_-]{8,}$/.test(authForm.password.value)  && confirmPassword.style.display === "block"){
+        passwordError.style.display ='block'
+        passwordValid = false;
+    }
+    else{
+        passwordError.style.display ='none'
+        passwordValid = true;
+        authForm.password.style.border = "none"
+    }
 
-    passwordTimer = setTimeout(() => {
-        if(!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_-])[A-Za-z\d@$!%*?&_-]{8,}$/.test(authForm.password.value)  && confirmPassword.style.display === "block"){
-            passwordError.style.display ='block'
-            passwordValid = false;
-        }
-        else{
-            passwordError.style.display ='none'
-            passwordValid = true;
-            authForm.password.style.border = "none"
-        }
-    }, 500)
-})
+    if(authForm.password.value != authForm.confirmPassword.value && confirmPassword.style.display === "block"){
+        confirmPasswordError.style.display ='block'
+        confirmPasswordValid = false;
+    }
+    else{
+        confirmPasswordError.style.display ='none'
+        confirmPasswordValid = true
+        authForm.confirmPassword.style.border = "none"
+    }
+}
+
+authForm.password.addEventListener('input', validatePassowrd)
 
 let confirmPasswordTimer;
-authForm.confirmPassword.addEventListener('input', ()=>{
-    clearTimeout(confirmPasswordTimer);
-
-    confirmPasswordTimer = setTimeout(() => {
-        if(authForm.password.value != authForm.confirmPassword.value && confirmPassword.style.display === "block"){
-            confirmPasswordError.style.display ='block'
-            confirmPasswordValid = false;
-        }
-        else{
-            confirmPasswordError.style.display ='none'
-            confirmPasswordValid = true
-            authForm.confirmPassword.style.border = "none"
-        }
-    }, 500)
-})
+authForm.confirmPassword.addEventListener('input',validatePassowrd)
 
 
 
