@@ -441,7 +441,6 @@ const validatePassowrd = () =>{
 
 authForm.password.addEventListener('input', validatePassowrd)
 
-let confirmPasswordTimer;
 authForm.confirmPassword.addEventListener('input',validatePassowrd)
 
 

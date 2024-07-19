@@ -16,15 +16,15 @@ const listenToBlocksRef = () =>{
     var tl = gsap.timeline({repeat:21})
     tl.to(('.splash-rec-3'), {
         delay:1,
-        y: '+=100vh'
+        y: `+=${100*vh}`
     })
     tl.to(('.splash-rec-1, .splash-rec-2'), {
-        y: `+=${rectangleHeight + gap})`,
+        y: `+=${d})`,
         ease:"bounce",
     })
     tl.set('.splash-rec-3', {
         opacity:0,
-        y: '-=200vh'
+        y: `-=${200*vh}`
     })
     tl.to('.splash-rec-3', {
         opacity:1,
@@ -36,15 +36,15 @@ const listenToBlocksRef = () =>{
 
     tl.to(('.splash-rec-2'), {
         delay:1,
-        y: '+=100vh'
+        y: `+=${100*vh}`
     })
     tl.to(('.splash-rec-3, .splash-rec-1'), {
-        y: `+=${rectangleHeight + gap})`,
+        y: `+=${d})`,
         ease:"bounce",
     })
     tl.set('.splash-rec-2', {
         opacity:0,
-        y: '-=200vh'
+        y: `-=${200*vh}`
     })
     tl.to('.splash-rec-2', {
         opacity:1,
@@ -56,15 +56,15 @@ const listenToBlocksRef = () =>{
 
     tl.to(('.splash-rec-1'), {
         delay:1,
-        y: '+=100vh'
+        y: `+=${100*vh}`
     })
     tl.to(('.splash-rec-2, .splash-rec-3'), {
-        y: `+=${rectangleHeight + gap})`,
+        y: `+=${d})`,
         ease:"bounce",
     })
     tl.set('.splash-rec-1', {
         opacity:0,
-        y: '-=200vh'
+        y: `-=${200*vh}`
     })
     tl.to('.splash-rec-1', {
         opacity:1,
