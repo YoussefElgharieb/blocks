@@ -100,7 +100,7 @@ const addGaps = (day) => {
     }
 }
 
-const removeGaps = (day) => {
+const resetGaps = (day) => {
     let i = 0;
     while(i < day.children.length){
         console.log(day.children.length);
@@ -111,6 +111,7 @@ const removeGaps = (day) => {
             i++;
         }
     }
+    addGaps(day);
 }
 
 
@@ -158,7 +159,6 @@ const closeForm = () => {
 }
 
 const createBlock = (data, id) => {
-
     let index = differenceInDays(today, new Date(data.date));
     if(0 <= index && index < n){
         let container = blocks.children[index];
@@ -184,8 +184,7 @@ const createBlock = (data, id) => {
                 let childStartTime = child.dataset.startTime;
                 if (data.startTime <= childStartTime){
                     child.insertAdjacentHTML("beforebegin", html);
-                    removeGaps(container);
-                    addGaps(container);
+                    resetGaps(container);
                     flag = false;
                 }
             }
@@ -193,19 +192,17 @@ const createBlock = (data, id) => {
         }
         if(flag){
             container.innerHTML += html;
-            removeGaps(container);
-            addGaps(container);
+            resetGaps(container);
         }
     }
 }
 
 const deleteBlock = (id) => {
     let block = document.querySelector(`.block[data-id=${id}]`)
-    if(block != null){ 
-        removeGaps(block.parentElement);
-        addGaps(block.parentElement);
+    if(block != null){
+        let parent = block.parentElement;
         block.remove();
-        
+        resetGaps(parent);
     }
 }
 
