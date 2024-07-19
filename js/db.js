@@ -32,12 +32,6 @@ const listenToBlocksRef = () =>{
     tl.to('.splash-rec-3', {
         y: `+=${100*vh - 2*d}`,
         ease:"bounce",
-        onComplete: ()=>{
-            if(loaded){
-                tl.pause();
-                splash.style.display= "none";
-            }
-        }
     })
 
     tl.to(('.splash-rec-2'), {
@@ -58,12 +52,6 @@ const listenToBlocksRef = () =>{
     tl.to('.splash-rec-2', {
         y: `+=${100*vh - 2*d}`,
         ease:"bounce",
-        onComplete: ()=>{
-            if(loaded){
-                tl.pause();
-                splash.style.display= "none";
-            }
-        }
     })
 
     tl.to(('.splash-rec-1'), {
@@ -86,7 +74,7 @@ const listenToBlocksRef = () =>{
         ease:"bounce",
         onComplete: ()=>{
             if(loaded){
-                tl.pause();
+                tl.revert();
                 splash.style.display= "none";
             }
         }
