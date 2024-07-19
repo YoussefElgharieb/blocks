@@ -12,8 +12,6 @@ authForm.addEventListener('submit', (evt)=>{
                 // ...
                 localStorage.setItem('id', user.uid)
                 listenToBlocksRef()
-
-                authPage.style.display ='none';
             })
             .catch((error) => {
                 var errorCode = error.code;
@@ -44,8 +42,6 @@ authForm.addEventListener('submit', (evt)=>{
                         endTime:"08:00",
                         date:format(date),
                     })
-
-                    authPage.style.display ='none';
 
                     
                 })
@@ -78,7 +74,13 @@ logout.addEventListener('click', (evt)=>{
     auth.signOut().then(() => {
         console.log("logout")
         localStorage.removeItem("id");
-        blocks.innerHTML = "";
+
+        for(let i = 0; i <n; i++){
+            blocks.children[i].innerHTML = ""
+            addGaps(blocks.children[i])
+        }
+
+
         authPage.style.display= "block"
         
         authSwitchToLogInFunc();

@@ -1,3 +1,5 @@
+const splash = document.getElementById('splash');
+
 const blocks = document.getElementById('blocks');
 
 const overlay = document.getElementById('overlay');
@@ -130,7 +132,6 @@ form.date.max = format(maxDate);
 currentLabel.innerHTML = `Today, ${days[today.getDay()]} ${months[today.getMonth()]} ${today.getDate()}`
 
 
-
 for(let i = 0; i < n; i++){
     let day = document.createElement('div');
     let date = new Date();
@@ -160,47 +161,50 @@ const closeForm = () => {
     form.title.value = "";
 }
 
+
 const createBlock = (data, id) => {
-    let index = differenceInDays(today, new Date(data.date));
-    if(0 <= index && index < n){
-        let container = blocks.children[index];
-        const html = `
-            <div class="block" data-id="${id}" data-title="${data.title}" data-start-time="${data.startTime}" data-end-time="${data.endTime}" data-date="${data.date}">
-                <div class="block-time-frame">
-                    <p class="block-start-time">${data.startTime}</p>
-                    <div class="line">
-                    
+    if (document.querySelector(`.block[data-id="${id}"]`) == null){
+        let index = differenceInDays(today, new Date(data.date));
+        if(0 <= index && index < n){
+            let container = blocks.children[index];
+            const html = `
+                <div class="block" data-id="${id}" data-title="${data.title}" data-start-time="${data.startTime}" data-end-time="${data.endTime}" data-date="${data.date}">
+                    <div class="block-time-frame">
+                        <p class="block-start-time">${data.startTime}</p>
+                        <div class="line">
+                        
+                        </div>
+                        <p class="block-end-time">${data.endTime}</p>
                     </div>
-                    <p class="block-end-time">${data.endTime}</p>
+                    <div class="block-details">
+                        <p class="block-title">${data.title}</p>
+                        <p class="block-duration">${differenceInHoursAndMinutes(data.startTime, data.endTime)}</p>
+                    </div>
                 </div>
-                <div class="block-details">
-                    <p class="block-title">${data.title}</p>
-                    <p class="block-duration">${differenceInHoursAndMinutes(data.startTime, data.endTime)}</p>
-                </div>
-            </div>
-        `
-        let flag = true;
-        for(let i = 0; i < container.children.length && flag; i++){
-            let child = container.children[i];
-            if(child.dataset.id != "empty"){
-                let childStartTime = child.dataset.startTime;
-                if (data.startTime <= childStartTime){
-                    child.insertAdjacentHTML("beforebegin", html);
-                    resetGaps(container);
-                    flag = false;
+            `
+            let flag = true;
+            for(let i = 0; i < container.children.length && flag; i++){
+                let child = container.children[i];
+                if(child.dataset.id != "empty"){
+                    let childStartTime = child.dataset.startTime;
+                    if (data.startTime <= childStartTime){
+                        child.insertAdjacentHTML("beforebegin", html);
+                        resetGaps(container);
+                        flag = false;
+                    }
                 }
+                
             }
-            
-        }
-        if(flag){
-            container.innerHTML += html;
-            resetGaps(container);
+            if(flag){
+                container.innerHTML += html;
+                resetGaps(container);
+            }
         }
     }
 }
 
 const deleteBlock = (id) => {
-    let block = document.querySelector(`.block[data-id=${id}]`)
+    let block = document.querySelector(`.block[data-id="${id}"]`)
     if(block != null){
         let parent = block.parentElement;
         block.remove();
@@ -357,6 +361,10 @@ form.startTime.addEventListener("change", evt => {
     }
 })
 
+form.addEventListener('submit', (evt)=>{
+    evt.preventDefault()
+})
+
 form.endTime.addEventListener("change", evt => {
     if(form.startTime.value >= form.endTime.value){
         if(form.endTime.value >= "00:59"){
@@ -483,7 +491,6 @@ const scroll = (direction) =>{
 }
 
 const bounce = (direction) => {
-
     let x = 5;
     var blocksTl = gsap.timeline({repeat:1})
     blocksTl.to(('.blocks > div'), {
@@ -518,9 +525,6 @@ const bounce = (direction) => {
         top:"-100px",
         opacity:1,
     })
-    
-    
-
 }
 
 nextBtn.addEventListener('click', async () => {

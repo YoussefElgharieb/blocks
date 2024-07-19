@@ -2,6 +2,97 @@ let userRef
 let blocksRef;
 
 const listenToBlocksRef = () =>{
+    authPage.style.display ='none';
+    splash.style.display= "flex";
+    let rectangleHeight = document.querySelector('.splash-rec-1').offsetHeight;
+    
+    let vw = window.innerWidth / 100;
+    let vh = window.innerHeight / 100;
+    let gap = Math.min(2* vw, 16);
+    
+    let d = rectangleHeight + gap;
+    let loaded = false;
+
+    var tl = gsap.timeline({repeat:21})
+    tl.to(('.splash-rec-3'), {
+        delay:1,
+        y: '+=100vh'
+    })
+    tl.to(('.splash-rec-1, .splash-rec-2'), {
+        y: `+=${rectangleHeight + gap})`,
+        ease:"bounce",
+    })
+    tl.set('.splash-rec-3', {
+        opacity:0,
+        y: '-=200vh'
+    })
+    tl.to('.splash-rec-3', {
+        opacity:1,
+    })
+    tl.to('.splash-rec-3', {
+        y: `+=${100*vh - 2*d}`,
+        ease:"bounce",
+        onComplete: ()=>{
+            if(loaded){
+                tl.pause();
+                splash.style.display= "none";
+            }
+        }
+    })
+
+    tl.to(('.splash-rec-2'), {
+        delay:1,
+        y: '+=100vh'
+    })
+    tl.to(('.splash-rec-3, .splash-rec-1'), {
+        y: `+=${rectangleHeight + gap})`,
+        ease:"bounce",
+    })
+    tl.set('.splash-rec-2', {
+        opacity:0,
+        y: '-=200vh'
+    })
+    tl.to('.splash-rec-2', {
+        opacity:1,
+    })
+    tl.to('.splash-rec-2', {
+        y: `+=${100*vh - 2*d}`,
+        ease:"bounce",
+        onComplete: ()=>{
+            if(loaded){
+                tl.pause();
+                splash.style.display= "none";
+            }
+        }
+    })
+
+    tl.to(('.splash-rec-1'), {
+        delay:1,
+        y: '+=100vh'
+    })
+    tl.to(('.splash-rec-2, .splash-rec-3'), {
+        y: `+=${rectangleHeight + gap})`,
+        ease:"bounce",
+    })
+    tl.set('.splash-rec-1', {
+        opacity:0,
+        y: '-=200vh'
+    })
+    tl.to('.splash-rec-1', {
+        opacity:1,
+    })
+    tl.to('.splash-rec-1', {
+        y: `+=${100*vh - 2*d}`,
+        ease:"bounce",
+        onComplete: ()=>{
+            if(loaded){
+                tl.pause();
+                splash.style.display= "none";
+            }
+        }
+    })  
+    
+
     userRef = db.collection("users").doc(localStorage.getItem('id'))
     blocksRef = userRef.collection("blocks")
     if(localStorage.getItem('id')){
@@ -14,13 +105,14 @@ const listenToBlocksRef = () =>{
                     deleteBlock(change.doc.id);
                 }
             })
+            loaded = true;
         })
     }
+
 }
 
 if(localStorage.getItem('id')){
     listenToBlocksRef();
-    authPage.style.display ='none';
 }
 
 // CRUD operations
@@ -54,18 +146,3 @@ deleteBtn.addEventListener('click', evt => {
     blocksRef.doc(deleteBtn.getAttribute('data-id')).delete();
     closeForm();
 })
-
-const get = (date) =>{
-    blocksRef.where("date", "==", date)
-    .get()
-    .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-            createBlock(doc.data(), doc.id);
-        });
-        wait = false;
-    })
-    .catch((error) => {
-        console.log("Error getting documents: ", error);
-    });
-    
-}
