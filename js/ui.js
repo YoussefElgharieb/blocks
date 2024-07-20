@@ -337,7 +337,7 @@ form.title.addEventListener('keydown', evt => {
                 updateBtn.style.display = ''
             }
         }
-    },1)
+    },100)
 })
 
 
