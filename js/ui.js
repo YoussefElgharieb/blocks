@@ -537,3 +537,9 @@ previousBtn.addEventListener('click', async () => {
         bounce("left");
     }
 })
+
+const setHeight = ()=>{
+    document.body.style.height = `${window.innerHeight}px`;
+}
+
+window.addEventListener('resize', setHeight)
