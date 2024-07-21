@@ -539,7 +539,7 @@ previousBtn.addEventListener('click', async () => {
 })
 
 const setHeight = ()=>{
-    document.body.style.height = `${window.innerHeight}px`;
+    document.body.style.height = `${window.visualViewport.height}px`;
 }
 
 window.addEventListener('resize', setHeight)
