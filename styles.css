@@ -7,8 +7,13 @@
     padding:0;
 }
 
-html,body{
-    height: dvh;
+:root {
+    --vh: 100vh;
+  }
+  
+  /* Apply it to your container */
+html, body {
+height: calc(var(--vh, 1vh) * 100);
 }
 
 body{
