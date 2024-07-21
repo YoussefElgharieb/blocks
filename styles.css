@@ -8,7 +8,7 @@
 }
 
 html,body{
-    height: -webkit-fill-available;
+    height: dvh;
 }
 
 body{
